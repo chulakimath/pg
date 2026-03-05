@@ -166,3 +166,18 @@ SELECT * FROM
 (SELECT *,dense_rank() OVER (ORDER BY products.stock_quantity DESC) AS qty_rank FROM flipkart_db.products) as tab
 WHERE tab.qty_rank<>2
 ```
+
+### # Case Insensetive Match
+```
+SELECT * FROM flipkart_db.products WHERE LOWER(flipkart_db.products.name) like '%st%'
+SELECT * FROM flipkart_db.products WHERE flipkart_db.products.name Ilike '%st%'
+```
+
+### #dense Rank AND PARTITION 
+Get Top two prie from each category 
+```
+    SELECT category,price
+        FROM 
+        (SELECT *, dense_rank() OVER (PARTITION BY category ORDER BY price DESC) AS rank FROM flipkart_db.products) AS TTABLE
+        WHERE rank <=2
+```

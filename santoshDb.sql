@@ -85,3 +85,63 @@ SELECT *
 SELECt * FROM
 (SELECT *,dense_rank() OVER (ORDER BY products.stock_quantity DESC) AS qty_rank FROM flipkart_db.products) as tab
 WHERE tab.qty_rank=2
+
+SELECT * FROM flipkart_db.products WHERE LOWER(flipkart_db.products.name) like '%st%'
+SELECT * FROM flipkart_db.products WHERE flipkart_db.products.name Ilike '%st%'
+
+SELECT category,price
+    FROM 
+    (SELECT *, dense_rank() OVER (PARTITION BY category ORDER BY price DESC) AS rank FROM flipkart_db.products) AS TTABLE
+    WHERE rank <=2
+
+
+--  SELECT  name,price
+--     FROM flipkart_db.products
+--     ORDER BY price ASC
+--     LIMIT 1 
+
+-- SELECT 
+--     AVG(price) AS avg,
+--     SUM(price) AS sm,
+--     COUNT(*) AS cnt,
+--     SUM(price)/COUNT(*) AS myAVg
+--     FROM flipkart_db.products
+--     WHERE products.category in('Home & Kitchen','Fitness')
+
+
+-- SELECT 
+--     products.name,
+--     products.stock_quantity
+--     FROM 
+--         flipkart_db.products
+--     WHERE products.stock_quantity>50 AND products.price<>299
+
+
+-- SELECT 
+--     TAB.product_id,
+--     TAB.price,
+--     TAB.name,
+--     TAB.category,
+--     TAB.price_rank
+--     FROM
+--         (SELECT *,ROW_NUMBER()
+--          OVER (PARTITION  BY category ORDER BY price DESC) AS price_rank
+--          FROM flipkart_db.products) AS TAB
+--     WHERE TAB.price_rank<=2
+
+
+-- SELECT 
+--     MIN(price),
+--     AVG(price),
+--     MAX(price),
+--     category
+--     FROM flipkart_db.products
+--     GROUP BY CATEGORY
+
+
+
+-- SELECT 
+--     DISTINCT UPPER(products.category) 
+--     FROM 
+--         flipkart_db.products
+    
