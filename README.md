@@ -181,3 +181,48 @@ Get Top two prie from each category
         (SELECT *, dense_rank() OVER (PARTITION BY category ORDER BY price DESC) AS rank FROM flipkart_db.products) AS TTABLE
         WHERE rank <=2
 ```
+### # ROW_NUMBER()
+ROW_NUMBER() just give count up no ties,even if rows are identical dosent care
+```
+SELECT name, price,
+ROW_NUMBER() OVER (ORDER BY price DESC) AS row_num
+FROM products;
+```
+| name | price | row_num |
+| ---- | ----- | ------- |
+| A    | 50000 | 1       |
+| B    | 50000 | 2       |
+| C    | 45000 | 3       |
+| D    | 40000 | 4       |
+---
+### # DENSE_RANK()
+DENSE_RANK() Gives Rank , if identical rows means same rank , dont skip any ranks 
+```
+SELECT name, price,
+DENSE_RANK() OVER (ORDER BY price DESC) AS dense_rank
+FROM products;
+```
+
+| name | price | dense_rank |
+| ---- | ----- | ---------- |
+| A    | 50000 | 1          |
+| B    | 50000 | 1          |
+| C    | 45000 | 2          |
+| D    | 40000 | 3          |
+---
+### #RANK()
+RANK() Gives same rank to identical rows but skips number of same rank given and starts from next count of rank
+```
+SELECT name, price,
+RANK() OVER (ORDER BY price DESC) AS rank
+FROM products;
+```
+| name | price | rank |
+| ---- | ----- | ---- |
+| A    | 50000 | 1    |
+| B    | 50000 | 1    |
+| F    | 50000 | 1    |
+| C    | 45000 | 4    |
+| D    | 40000 | 5    |
+
+Missed Rank 2 ,3 because 1(1),1(2),1(3) (Count is consdered but skipped rank)
