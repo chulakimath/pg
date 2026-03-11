@@ -212,16 +212,179 @@ SET search_path TO students;
 
 
 
-1234
 
 
 
 
+
+
+-- SELECT 
+--     TRIM('            Santosh  '),
+--     ('            Santosh  ')
+
+
+-- SELECT 
+--     REPLACE(sku_code,LEFT(sku_code,2),'SEE') 
+-- FROM
+--     flipkart_db.products
+
+
+
+
+-- CREATE TABLE flipkart_db.students (
+--     student_id SERIAL PRIMARY KEY,
+--     name VARCHAR(255),
+--     age INT
+-- )
+
+-- SELECT setval(
+--     pg_get_serial_sequence('flipkart_db.students','student_id'),8
+-- )
+
+INSERT INTO flipkart_db.students (student_name,age,email) VALUES('santu3',26,'santu@mail.com')
+
+SELECT * FROM flipkart_db.students
+
+
+-- TRUNCATE flipkart_db.students;
+-- SELECT setval(
+--     pg_get_serial_sequence('flipkart_db.students','student_id'),1,FALSE
+-- );
+
+-- ALTER TABLE 
+--     flipkart_db.students 
+-- ADD COLUMN 
+--     email VARCHAR(255) DEFAULT NULL
+
+-- ALTER TABLE
+--     flipkart_db.students
+-- DROP COLUMN
+--     email
+
+-- ALTER TABLE
+--     flipkart_db.students
+-- RENAME COLUMN
+--     name TO student_name 
+
+-- ALTER TABLE
+--     flipkart_db.students
+-- ALTER COLUMN
+--     age TYPE SMALLINT
+
+-- ALTER TABLE
+--     flipkart_db.students
+-- ALTER COLUMN
+--     age SET DEFAULT 18
+
+-- ALTER TABLE 
+--     flipkart_db.students
+-- ADD CONSTRAINT 
+--     age_check CHECK(age>=18)
+
+
+-- ALTER TABLE 
+--     flipkart_db.students
+-- ADD CONSTRAINT
+--     unique_email UNIQUE(email)
+
+-- ALTER TABLE
+--     flipkart_db.students
+-- DROP CONSTRAINT 
+--     unique_email
+
+
+-- ALTER TABLE flipkart_db.School_students
+-- RENAME TO students
+-- ALTER TABLE flipkart_db.products
+-- ADD COLUMN price_tag VARCHAR(255)
+
+SELECT * FROM flipkart_db.products
+
+UPDATE  flipkart_db.products
+SET price_tag=
+CASE 
+    WHEN price>1000 THEN 'Expensive'
+    WHEN price BETWEEN 500 AND 1000 THEN 'Moderate'
+    ELSE 'Cheap'
+    END
+
+SELECT * FROM
+    (SELECT 
+        products.name,
+        products.category,
+        products.price,
+        CASE 
+            WHEN products.price > 1000 THEN 'Expensive'
+            WHEN products.price BETWEEN 500 AND 1000 THEN 'Moderate'
+            WHEN products.price < 500 THEN 'Cheap'
+            END AS price_tag 
+    FROM flipkart_db.products) AS T1
+WHERE price_tag='Cheap'
+ORDER BY price_tag ASC
 
 
 
 SELECT 
-    TRIM('            Santosh  '),
-    ('            Santosh  ')
+    products.name,
+    products.stock_quantity,
+    CASE 
+        WHEN stock_quantity>100 THEN 'High Stock'
+        WHEN stock_quantity BETWEEN 30 AND 100 THEN 'Medium Stock'
+        ELSE 'Low Stock'
+        END as label 
+FROM flipkart_db.products
+
+-- UPDATE flipkart_db.students
+-- SET student_name=CONCAT('santosh','-',student_id)
 
 
+SELECT * FROM flipkart_db.students
+SELECT * FROM flipkart_db.student_profile
+
+-- CREATE TABLE flipkart_db.student_profile
+-- (
+--     student_id INT PRIMARY KEY,
+--     age SMALLINT CHECK (age > 0),
+--     email VARCHAR(255) UNIQUE NOT NULL,
+--     phone_num VARCHAR(15) UNIQUE NOT NULL,
+--         FOREIGN KEY (student_id) 
+--         REFERENCES flipkart_db.students(student_id)
+--         ON DELETE CASCADE 
+-- )
+
+-- INSERT INTO 
+--     flipkart_db.student_profile 
+--     VALUES 
+    -- (1,25,'santosh1@mail.com','1234567891'),
+    -- (2,25,'santosh2@mail.com','1234567892'),
+    -- (3,25,'santosh3@mail.com','1234567893'),
+    -- (4,25,'santosh4@mail.com','1234567894'),
+    -- (5,25,'santosh5@mail.com','1234567895');
+
+-- DELETE FROM flipkart_db.students
+-- WHERE student_id=3
+
+
+SELECT 
+    flipkart_db.students.student_id,
+    flipkart_db.students.student_name,
+    flipkart_db.student_profile.age,
+    flipkart_db.student_profile.email,
+    flipkart_db.student_profile.phone_num
+    FROM
+        flipkart_db.students
+    JOIN flipkart_db.student_profile
+    ON flipkart_db.students.student_id=flipkart_db.student_profile.student_id
+
+
+CREATE TABLE flipkart_db.student_exam
+(
+    id BIGSERIAL PRIMARY KEY,
+    student_id INT,
+    subject VARCHAR(255) NOT NULL,
+    marks SMALLINT NOT NULL,
+    FOREIGN KEY (student_id)
+    REFERENCES flipkart_db.students(student_id)
+    ON DELETE CASCADE,
+    UNIQUE(student_id,subject)
+)

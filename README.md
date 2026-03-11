@@ -7,6 +7,9 @@ name it admin and create database with same name
 sudo -u postgres createdb root
 ```
 
+
+
+
 # Start Shell
 opean shell
 ``` 
@@ -72,8 +75,8 @@ pg_get_serial_sequence
 BASIC
 ```
 SELECT setval(
-pg_get_serial_sequence
-('students.students', 'id'),2);
+    pg_get_serial_sequence('students.students', 'id'),2
+);
 ```
 
 ###### ALTER ADD PRIMARY KEY
@@ -226,3 +229,142 @@ FROM products;
 | D    | 40000 | 5    |
 
 Missed Rank 2 ,3 because 1(1),1(2),1(3) (Count is consdered but skipped rank)
+
+
+
+# Performance analyze
+Analyze loops and time of execution
+```
+EXPLAIN (ANALYZE,BUFFERS, FORMAT JSON)
+SELECT * FROM flipkart_db.products;
+
+```
+OUTPUT
+```
+[
+  {
+    "Plan": {
+      "Node Type": "Seq Scan",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Relation Name": "products",
+      "Alias": "products",
+      "Startup Cost": 0.00,
+      "Total Cost": 1.13,
+      "Plan Rows": 13,
+      "Plan Width": 58,
+      "Actual Startup Time": 0.014,
+      "Actual Total Time": 0.017,
+      "Actual Rows": 13,
+      "Actual Loops": 1,
+      "Shared Hit Blocks": 1,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning": {
+      "Shared Hit Blocks": 0,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.087,
+    "Triggers": [
+    ],
+    "Execution Time": 0.034
+  }
+]
+```
+
+### # TYPE CASTING
+CAST(column_name AS DATATYPE)
+:: DATATYPE
+```
+    SELECT 
+        CAST(LENGTH(name) AS VARCHAR) AS casted_length,
+        CAST(LENGTH(name) AS TEXT) AS casted_length2,
+        LENGTH(name)::VARCHAR AS casted_length3,
+        LENGTH(name)::TEXT AS casted_length3
+    FROM 
+        flipkart_db.products
+```
+
+
+
+
+
+### String Functions
+### #UPPER(column);
+```
+SELECT 
+    DISTINCT UPPER(products.category) 
+    FROM 
+        flipkart_db.products
+```
+### #LOWER(column);
+```
+SELECT 
+    DISTINCT LOWER(products.category) 
+    FROM 
+        flipkart_db.products
+```
+### #LENGTH(column);
+```
+SELECT 
+    LENGTH(products.category)
+FROM 
+    flipkart_db.products
+```
+
+### #SUBSTR(column)
+```
+SELECT 
+    SUBSTR(products.category,1,3),
+FROM
+    flipkart_db.products
+```
+\
+last 3 digits
+```
+SELECT 
+    SUBSTR(products.sku_code,LENGTH(sku_code)-3,LENGTH(sku_code)) AS last3digits,
+    RIGHT(products.sku_code,3) AS last3digitsFROMFUNCTION
+FROM
+    flipkart_db.products
+```
+first 3 digits
+```
+SELECT 
+
+    LEFT(products.sku_code,3) AS first3digitsFROMFUNCTION
+FROM
+    flipkart_db.products
+```
+### #CONCAT AND CONCAT_WS
+```
+SELECT 
+    CONCAT(products.sku_code,' - ',products.category,' - ',products.price) as manual_concat,
+    CONCAT_WS(' - ',products.sku_code,products.category,products.price) as concat_with_seperator
+FROM 
+    flipkart_db.products
+```
+
+### #TRIM
+```
+SELECT 
+    TRIM('            Santosh  '),
+    ('            Santosh  ')
+```
+

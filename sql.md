@@ -75,8 +75,15 @@ pg_get_serial_sequence
 BASIC
 ```
 SELECT setval(
-pg_get_serial_sequence
-('students.students', 'id'),2);
+    pg_get_serial_sequence('students.students', 'id'),2
+);
+```
+AUTO ICREMENT SET TO 0 
+```
+TRUNCATE students.students;
+SELECT setval(
+    pg_get_serial_sequence('students.students','id'),1,FALSE
+);
 ```
 
 ###### ALTER ADD PRIMARY KEY
@@ -368,3 +375,69 @@ SELECT
     ('            Santosh  ')
 ```
 
+### #ALTER
+ADD column
+```
+ALTER TABLE 
+    flipkart_db.students 
+ADD COLUMN 
+    email VARCHAR(255) DEFAULT NULL
+```
+DROP COLUMN
+```
+ALTER TABLE
+    flipkart_db.students
+DROP COLUMN
+    email
+```
+RENAME COLUMN
+```
+ALTER TABLE
+    flipkart_db.students
+RENAME COLUMN
+    name TO student_name 
+```
+ALTER COLUMN
+```
+ALTER TABLE
+    flipkart_db.students
+ALTER COLUMN
+    age TYPE SMALLINT
+```
+```
+ALTER TABLE
+    flipkart_db.students
+ALTER COLUMN
+    age SET DEFAULT 18
+```
+```
+ALTER TABLE 
+    flipkart_db.students
+ALTER COLUMN
+    age DROP DEFAULT 
+```
+### # ADD CONSTRAINT
+```
+ALTER TABLE 
+    flipkart_db.students
+ADD CONSTRAINT 
+    age_check CHECK(age>=18)
+```
+```
+ALTER TABLE 
+    flipkart_db.students
+ADD CONSTRAINT
+    unique_email UNIQUE(email)
+```
+```
+ALTER TABLE
+    flipkart_db.students
+DROP CONSTRAINT 
+    unique_email
+```
+
+## #Rename TABLE
+```
+ALTER TABLE flipkart_db.School_students
+RENAME TO students
+``` 
